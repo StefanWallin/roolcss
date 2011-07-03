@@ -18,24 +18,27 @@ JSDIR=js
 IMGDIR=img
 OBJDIR=obj
 
+#Special targets:
+.SILENT:	help
+
 help:
 	echo "Available targets:"
 	echo "=================="
 	echo " "
-	echo "help"			Displays this information
+	echo "help			Displays this information"
 	echo "setup-env		Set up the staging environment."
 	echo "setup-git		Set up the git ignore rules."
 	echo "update-env		Updates the third party libraries to build this project."
 	echo " "
-	echo "install		Builds and installs all resources."
+	echo "install			Builds and installs all resources."
 	echo "ic			Builds and installs the css & less resources."
 	echo "ij			Builds and installs the javascript."
 	echo "ip			Builds and installs the image resources."
 	echo "io			Builds and installs all the object resources."
 	echo " "
 	echo "test			Run all available test methods."
-	echo "jslint		Run all the javascript tests."
-	echo "csslint		Run all the css tests."
+	echo "jslint		 	Run all the javascript tests."
+	echo "csslint			Run all the css tests."
 	echo "htmllint		Run all the markup tests."
 	
 install:
