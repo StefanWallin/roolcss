@@ -1,11 +1,15 @@
 #root dir
-TOPDIR=`pwd`  
+TOPDIR=.  
 
 #libs
 LIBDIRNAME=lib
 LIBS=${TOPDIR}/${LIBDIRNAME}
-NODEPATH=${LIBS}/node-latest-install
+NODEPATH=`cd ./lib/node-latest-install;pwd`
 LESSPATH=${LIBS}/less
+JSLINTPATH=${LIBS}/js-lint
+CSSLINTPATH=${LIBS}/css-lint
+CSSVALIDATORPATH=${LIBS}/css-validator
+HTMLVALIDATORPAHT=${LIBS}/html-validator
 
 BUILDDIR=${TOPDIR}/build
 RESOURCEDIR_B=		#If non-empty, remember intial slash!
@@ -51,6 +55,12 @@ install-env:
 	echo " :: Removing old libraries and creating new library folders"
 	rm -rf ${NODEPATH}; mkdir -p ${NODEPATH}
 	rm -rf ${LESSPATH}; mkdir -p ${LESSPATH}
+	rm -rf ${JSLINTPATH}; mkdir -p ${JSLINTPATH}
+	rm -rf ${CSSLINTPATH}; mkdir -p ${CSSLINTPATH}
+	rm -rf ${CSSVALIDATORPATH}; mkdir -p ${CSSVALIDATORPATH}
+	rm -rf ${HTMLVALIDATORPATH}; mkdir -p ${HTMLVALIDATORPATH}
+	
+
 	
 	echo " :: Downloading lessc, the commandline less css compiler."
 	curl -s https://raw.github.com/cloudhead/less.js/master/bin/lessc > ${LESSPATH}/lessc.js
@@ -66,6 +76,12 @@ install-env:
 	
 	echo " :: Installing nodejs."
 	cd ${NODEPATH}; make install # ok, fine, this step probably takes more than 30 seconds...
+
+	echo " :: Setting up the Jigsaw CSS Validator"
+	cd $CSSVALIDATORPATH; git clone git://github.com/StefanWallin/jigsaw-runner.git
+	cd $CSSVALIDATORPATH; sh jigsaw-update.sh
+	
+	echo " :: Setting up the "
 
 # This below step is probably unnecessary. But I'll include it if someone want's it.
 #	curl http://npmjs.org/install.sh > ${NODEPATH}/install.sh
