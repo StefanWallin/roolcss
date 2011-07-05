@@ -32,6 +32,12 @@ Updating external libraries
 </pre>
 It's as simple as that!
 
+Usage
+=====
+When you've set up your environment. Run this command to get usage info:
+<pre>
+	make help
+</pre>
 
 
 
