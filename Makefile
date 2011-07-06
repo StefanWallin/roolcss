@@ -60,7 +60,7 @@ help:
 	echo "setup-git		Set up the git ignore rules."
 	echo "update-env		Updates the third party libraries to build this project."
 	echo " "
-	echo "install			Builds and installs all resources."
+	echo "ir			Builds and installs all resources."
 	echo "ic			Builds and installs the css & less resources."
 	echo "ij			Builds and installs the javascript."
 	echo "ip			Builds and installs the image resources."
@@ -191,3 +191,26 @@ setup-git:
 setup:
 	make -s setup-env
 
+##########################
+# Usage part of makefile #
+##########################
+
+ir:
+	#Builds and installs all resources."
+ic:
+	#Builds and installs the css & less resources.
+ij:
+	#Builds and installs the javascript.
+ip:
+	#Builds and installs the image resources.
+io:
+	#Builds and installs all the object resources.
+ 
+test:
+	#Run all available test methods.
+jslint:
+	#Run all the javascript tests.
+csslint:
+	#Run all the css tests.
+htmllint:
+	#Run all the markup tests.
