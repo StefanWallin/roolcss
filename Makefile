@@ -77,21 +77,10 @@ install:
 update-env:
 	echo " :: Updating libraries."
 	make -s install-env
-		
-install-env:
-	echo " :: Removing old libraries and creating new library folders"
+install-node:
+	echo " :: Removing old node-server"
 	rm -rf ${NODEPATH}; mkdir -p ${NODEPATH}
-	rm -rf ${LESSPATH}; mkdir -p ${LESSPATH}
-	rm -rf ${JSLINTPATH}; mkdir -p ${JSLINTPATH}
-	rm -rf ${CSSLINTPATH}; mkdir -p ${CSSLINTPATH}
-	rm -rf ${CSSVALIDATORPATH}; mkdir -p ${CSSVALIDATORPATH}
-	rm -rf ${HTMLVALIDATORPATH}; mkdir -p ${HTMLVALIDATORPATH}
 	
-
-	
-	echo " :: Downloading lessc, the commandline less css compiler."
-	curl -s https://raw.github.com/cloudhead/less.js/master/bin/lessc > ${LESSPATH}/lessc.js
-
 	echo " :: Downloading nodejs."
 	curl -s http://nodejs.org/dist/node-latest.tar.gz > ${NODEPATH}/node-latest.tar.gz 
 	
@@ -102,11 +91,44 @@ install-env:
 	cd ${NODEPATH}; ./configure --prefix=${NODEPATH}
 	
 	echo " :: Installing nodejs."
-	cd ${NODEPATH}; make install # ok, fine, this step probably takes more than 30 seconds...
+	cd ${NODEPATH}; make -s install # ok, fine, this step probably takes more than 30 seconds...
+	echo " :: Node installation done."	
 
+install-less:
+	echo " :: Removing old less css compiler"
+	rm -rf ${LESSPATH}; mkdir -p ${LESSPATH}
+	
+	echo " :: Downloading lessc, the commandline less css compiler."
+	curl -s https://raw.github.com/cloudhead/less.js/master/bin/lessc > ${LESSPATH}/lessc.js
+	
+	echo " :: less compiler installation done."	
+install-css-validator:
+	echo " :: Removing old CSS Validator"
+	rm -rf ${CSSVALIDATORPATH}; mkdir -p ${CSSVALIDATORPATH}
+	
 	echo " :: Setting up the Jigsaw CSS Validator"
-	cd $CSSVALIDATORPATH; git clone git://github.com/StefanWallin/jigsaw-runner.git
-	cd $CSSVALIDATORPATH; sh jigsaw-update.sh
+	cd ${CSSVALIDATORPATH}; git clone git://github.com/StefanWallin/jigsaw-runner.git
+	cd ${CSSVALIDATORPATH}/jigsaw-runner/; sh jigsaw-update.sh
+	echo " :: CSS Validator setup done."
+	
+install-html-validator:
+	echo " :: Removing old HTML Validator"
+	rm -rf ${HTMLVALIDATORPATH}; mkdir -p ${HTMLVALIDATORPATH}
+	
+install-js-lint:
+	echo " :: Removing old JSLinter"
+	rm -rf ${JSLINTPATH}; mkdir -p ${JSLINTPATH}
+
+install-css-lint:
+	rm -rf ${CSSLINTPATH}; mkdir -p ${CSSLINTPATH}
+	
+install-env:
+	make -s install-node
+	make -s install-less
+	make -s install-css-validator
+	
+
+
 	
 	echo " :: Setting up the "
 
