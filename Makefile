@@ -120,12 +120,22 @@ install-js-lint:
 	rm -rf ${JSLINTPATH}; mkdir -p ${JSLINTPATH}
 
 install-css-lint:
+	echo " :: Removing old CSSLinter"
 	rm -rf ${CSSLINTPATH}; mkdir -p ${CSSLINTPATH}
+	
+install-compass:
+	echo " :: Removing old Compass"
+	rm -rf ${COMPASSPATH}; mkdir -p ${COMPASSPATH}
+	
 	
 install-env:
 	make -s install-node
 	make -s install-less
 	make -s install-css-validator
+	make -s install-html-validator
+	make -s install-js-lint
+	make -s install-css-lint
+	make -s install-compass
 	
 
 
