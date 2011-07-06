@@ -27,6 +27,9 @@ OBJDIR=obj
 .SILENT:	help
 .SILENT:	debug
 
+default: help
+
+
 debug:
 	echo "VARS:"
 	echo "====="
@@ -49,29 +52,11 @@ debug:
 	echo "jsdir: 			${JSDIR}"
 	echo "imgdir:			${IMGDIR}"
 	echo "objdir:			${OBJDIR}"
-	
 
-help:
-	echo "Available targets:"
-	echo "=================="
-	echo " "
-	echo "help			Displays this information"
-	echo "setup-env		Set up the staging environment."
-	echo "setup-git		Set up the git ignore rules."
-	echo "update-env		Updates the third party libraries to build this project."
-	echo " "
-	echo "ir			Builds and installs all resources."
-	echo "ic			Builds and installs the css & less resources."
-	echo "ij			Builds and installs the javascript."
-	echo "ip			Builds and installs the image resources."
-	echo "io			Builds and installs all the object resources."
-	echo " "
-	echo "test			Run all available test methods."
-	echo "jslint		 	Run all the javascript tests."
-	echo "csslint			Run all the css tests."
-	echo "htmllint		Run all the markup tests."
-	
-	echo "nodepath ${NODEPATH}"
+##########################
+# Setup part of makefile #
+##########################
+
 install:
 	echo "Building"
 update-env:
@@ -194,6 +179,28 @@ setup:
 ##########################
 # Usage part of makefile #
 ##########################
+
+
+help:
+	echo "Available targets:"
+	echo "=================="
+	echo " "
+	echo "help			Displays this information"
+	echo "setup-env		Set up the staging environment."
+	echo "setup-git		Set up the git ignore rules."
+	echo "update-env		Updates the third party libraries to build this project."
+	echo " "
+	echo "ir			Builds and installs all resources."
+	echo "ic			Builds and installs the css & less resources."
+	echo "ij			Builds and installs the javascript."
+	echo "ip			Builds and installs the image resources."
+	echo "io			Builds and installs all the object resources."
+	echo " "
+	echo "test			Run all available test methods."
+	echo "jslint		 	Run all the javascript tests."
+	echo "csslint			Run all the css tests."
+	echo "htmllint		Run all the markup tests."
+
 
 ir:
 	#Builds and installs all resources."
