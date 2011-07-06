@@ -1,15 +1,16 @@
 #root dir
-TOPDIR=.  
+TOPDIR=`pwd`
 
 #libs
 LIBDIRNAME=lib
 LIBS=${TOPDIR}/${LIBDIRNAME}
-NODEPATH=`cd ./lib/node-latest-install;pwd`
+NODEPATH=${LIBS}/node-latest-install
 LESSPATH=${LIBS}/less
 JSLINTPATH=${LIBS}/js-lint
 CSSLINTPATH=${LIBS}/css-lint
 CSSVALIDATORPATH=${LIBS}/css-validator
-HTMLVALIDATORPAHT=${LIBS}/html-validator
+HTMLVALIDATORPATH=${LIBS}/html-validator
+COMPASSPATH=${LIBS}/compass
 
 BUILDDIR=${TOPDIR}/build
 RESOURCEDIR_B=		#If non-empty, remember intial slash!
@@ -24,6 +25,31 @@ OBJDIR=obj
 
 #Special targets:
 .SILENT:	help
+.SILENT:	debug
+
+debug:
+	echo "VARS:"
+	echo "====="
+	echo "libdirname: 		${LIBDIRNAME}"
+	echo "libs: 			${LIBS}"
+	echo "nodepath:		${NODEPATH}"
+	echo "lesspath:		${LESSPATH}"
+	echo "jslintpath:		${JSLINTPATH}"
+	echo "csslintpath:		${CSSLINTPATH}"
+	echo "cssvalidatorpath: 	${CSSVALIDATORPATH}"
+	echo "htmlvalidatorpath:	${HTMLVALIDATORPATH}"
+	echo "compasspath: 		${COMPASSPATH}"
+	echo ""
+	echo "builddir: 		${BUILDDIR}"
+	echo "resourcedir_b: 	${RESOURCEDIR_B}"
+	echo "sourcedir: 		${SOURCEDIR}"
+	echo "resourcedir_b:		${RESOURCEDIR_S}"
+	echo ""
+	echo "cssdir:			${CSSDIR}"
+	echo "jsdir: 			${JSDIR}"
+	echo "imgdir:			${IMGDIR}"
+	echo "objdir:			${OBJDIR}"
+	
 
 help:
 	echo "Available targets:"
@@ -45,6 +71,7 @@ help:
 	echo "csslint			Run all the css tests."
 	echo "htmllint		Run all the markup tests."
 	
+	echo "nodepath ${NODEPATH}"
 install:
 	echo "Building"
 update-env:
