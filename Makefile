@@ -13,15 +13,18 @@ HTMLVALIDATORPATH=${LIBS}/html-validator
 COMPASSPATH=${LIBS}/compass
 
 BUILDDIR=${TOPDIR}/build
-RESOURCEDIR_B=		#If non-empty, remember intial slash!
+RESOURCEDIR_B=
+		#If non-empty, remember intial slash!
 
 SOURCEDIR=${TOPDIR}/src
-RESOURCEDIR_S=/r		#If non-empty, remember intial slash!
+RESOURCEDIR_S=/r
+		#If non-empty, remember intial slash!
 
 CSSDIR=css
 JSDIR=js
 IMGDIR=img
 OBJDIR=obj
+SPRITEDIR=sprites
 
 #Special targets:
 .SILENT:	help
@@ -46,12 +49,13 @@ debug:
 	echo "builddir: 		${BUILDDIR}"
 	echo "resourcedir_b: 	${RESOURCEDIR_B}"
 	echo "sourcedir: 		${SOURCEDIR}"
-	echo "resourcedir_b:		${RESOURCEDIR_S}"
+	echo "resourcedir_s:	${RESOURCEDIR_S}"
 	echo ""
 	echo "cssdir:			${CSSDIR}"
 	echo "jsdir: 			${JSDIR}"
 	echo "imgdir:			${IMGDIR}"
 	echo "objdir:			${OBJDIR}"
+	echo "sprites:"		${SPRITEDIR}
 
 ##########################
 # Setup part of makefile #
@@ -140,7 +144,7 @@ setup-env:
 	mkdir -p ${LIBS}
 	
 	echo " :: Downloading and installing libraries..."
-	make -s update-env
+	#make -s update-env
 	echo " :: Done downloading and installing libraries."
 
 	echo " :: Setting up build directories."
@@ -155,8 +159,9 @@ setup-env:
 	mkdir -p ${SOURCEDIR}${RESOURCEDIR_S}/${CSSDIR}
 	mkdir -p ${SOURCEDIR}${RESOURCEDIR_S}/${JSDIR}
 	mkdir -p ${SOURCEDIR}${RESOURCEDIR_S}/${IMGDIR}
-	mkdir -p ${SOURCEDIR}${RESOURCEDIR_S}/${OBJDIR}	
-
+	mkdir -p ${SOURCEDIR}${RESOURCEDIR_S}/${OBJDIR}
+	mkdir -p ${SOURCEDIR}${RESOURCEDIR_S}/${SPRITEDIR}
+	
 	echo " ::"	
 	echo " :: The environment is set up. Now point your webserver towards:"
 	echo " ::	${BUILDDIR}"
@@ -194,6 +199,7 @@ help:
 	echo "ic			Builds and installs the css & less resources."
 	echo "ij			Builds and installs the javascript."
 	echo "ip			Builds and installs the image resources."
+	echo "is			Builds and installs all the sprites."
 	echo "io			Builds and installs all the object resources."
 	echo " "
 	echo "test			Run all available test methods."
@@ -203,21 +209,33 @@ help:
 
 
 ir:
-	#Builds and installs all resources."
+	#Builds and installs all resources.
+	make ic ij ip is io
+	
 ic:
 	#Builds and installs the css & less resources.
+	
 ij:
 	#Builds and installs the javascript.
+	
 ip:
 	#Builds and installs the image resources.
+	
+is:
+	#Builds and installs all the sprites.
+	
 io:
 	#Builds and installs all the object resources.
  
 test:
 	#Run all available test methods.
+	make jslint csslint htmllint
+	
 jslint:
 	#Run all the javascript tests.
+	
 csslint:
 	#Run all the css tests.
+	
 htmllint:
 	#Run all the markup tests.
