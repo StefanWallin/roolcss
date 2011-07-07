@@ -65,7 +65,14 @@ install:
 	echo "Building"
 update-env:
 	echo " :: Updating libraries."
-	make -s install-env
+	make -s install-node
+	make -s install-less
+	make -s install-css-validator
+	make -s install-html-validator
+	make -s install-js-lint
+	make -s install-css-lint
+	make -s install-compass
+	
 install-node:
 	echo " :: Removing old node-server"
 	rm -rf ${NODEPATH}; mkdir -p ${NODEPATH}
@@ -117,20 +124,6 @@ install-compass:
 	rm -rf ${COMPASSPATH}; mkdir -p ${COMPASSPATH}
 	
 	
-install-env:
-	make -s install-node
-	make -s install-less
-	make -s install-css-validator
-	make -s install-html-validator
-	make -s install-js-lint
-	make -s install-css-lint
-	make -s install-compass
-	
-
-
-	
-	echo " :: Setting up the "
-
 # This below step is probably unnecessary. But I'll include it if someone want's it.
 #	curl http://npmjs.org/install.sh > ${NODEPATH}/install.sh
 #	cd ${NODEPATH}; sh install.sh
