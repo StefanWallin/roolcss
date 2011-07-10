@@ -18,7 +18,7 @@ Create a new directory for you project and move to that folder with the terminal
 Setting up git
 --------------
 <pre>
-	make git-setup
+	make setup-git
 </pre>
 This command will create some git-ignore rules. <strong style="color:red; font-weight:600;">Be aware! This will wipe out previous .gitignores</strong>
 
@@ -38,6 +38,5 @@ When you've set up your environment. Run this command to get usage info:
 <pre>
 	make help
 </pre>
-
 
 

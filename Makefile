@@ -1,10 +1,10 @@
 #root dir
-TOPDIR=`pwd`
+TOPDIR=$(realpath .)
 
 #libs
 LIBDIRNAME=lib
 LIBS=${TOPDIR}/${LIBDIRNAME}
-NODEPATH=${LIBS}/node-latest-install
+NODEPATH=${LIBS}/node
 LESSPATH=${LIBS}/less
 JSLINTPATH=${LIBS}/js-lint
 CSSLINTPATH=${LIBS}/css-lint
@@ -29,7 +29,8 @@ SPRITEDIR=sprites
 #Special targets:
 .SILENT:	help
 .SILENT:	debug
-
+.SILENT:	setup-git
+	
 default: help
 
 
@@ -49,7 +50,7 @@ debug:
 	echo "builddir: 		${BUILDDIR}"
 	echo "resourcedir_b: 	${RESOURCEDIR_B}"
 	echo "sourcedir: 		${SOURCEDIR}"
-	echo "resourcedir_s:	${RESOURCEDIR_S}"
+	echo "resourcedir_s:		${RESOURCEDIR_S}"
 	echo ""
 	echo "cssdir:			${CSSDIR}"
 	echo "jsdir: 			${JSDIR}"
@@ -66,6 +67,7 @@ install:
 update-env:
 	echo " :: Updating libraries."
 	make -s install-node
+	make -s install-npm
 	make -s install-less
 	make -s install-css-validator
 	make -s install-html-validator
@@ -76,19 +78,37 @@ update-env:
 install-node:
 	echo " :: Removing old node-server"
 	rm -rf ${NODEPATH}; mkdir -p ${NODEPATH}
-	
+	rm -rf node; mkdir -p node
 	echo " :: Downloading nodejs."
-	curl -s http://nodejs.org/dist/node-latest.tar.gz > ${NODEPATH}/node-latest.tar.gz 
+	curl -s http://nodejs.org/dist/node-latest.tar.gz > node-latest.tar.gz 
 	
 	echo " :: Unzipping nodejs."
-	cd ${NODEPATH}; cat node-latest.tar.gz |tar xz --strip-components=1
+	
+	tar xzf node-latest.tar.gz --strip-components=1 -C node
 	
 	echo " :: Configuring nodejs."
-	cd ${NODEPATH}; ./configure --prefix=${NODEPATH}
+	cd node; ./configure --prefix=${NODEPATH}
 	
 	echo " :: Installing nodejs."
-	cd ${NODEPATH}; make -s install # ok, fine, this step probably takes more than 30 seconds...
+	cd node; make -s install
+	
+	echo " :: Removing tarball and source dir."
+	rm -rf node-latest.tar.gz node
+
 	echo " :: Node installation done."	
+install-npm:
+
+	echo " :: Removing old npm(node package manager)."
+	
+
+	echo " :: Downloading npm."
+	curl http://npmjs.org/install.sh > npm-install.sh	
+
+	echo " :: Installning npm."
+	chmod +x npm-install.sh
+	./npm-install.sh
+
+	echo " :: npm installation done."
 
 install-less:
 	echo " :: Removing old less css compiler"
@@ -105,7 +125,7 @@ install-css-validator:
 	echo " :: Setting up the Jigsaw CSS Validator"
 	cd ${CSSVALIDATORPATH}; git clone git://github.com/StefanWallin/jigsaw-runner.git
 	cd ${CSSVALIDATORPATH}/jigsaw-runner/; sh jigsaw-update.sh
-	echo " :: CSS Validator setup done."
+	echo " :: CSS Validator installation done."
 	
 install-html-validator:
 	echo " :: Removing old HTML Validator"
@@ -122,22 +142,19 @@ install-css-lint:
 install-compass:
 	echo " :: Removing old Compass"
 	rm -rf ${COMPASSPATH}; mkdir -p ${COMPASSPATH}
-	
-	
-# This below step is probably unnecessary. But I'll include it if someone want's it.
-#	curl http://npmjs.org/install.sh > ${NODEPATH}/install.sh
-#	cd ${NODEPATH}; sh install.sh
-	
+
 setup-env:
 	echo " :: Setting up environment variables"
-	echo "export PATH=${NODEPATH}:${PATH}" >> ~/.bashrc
-	source ~/.bashrc
+	mkdir -p ${NODEPATH}
+	echo "export PATH=${NODEPATH}/bin:${PATH}" >> ~/.bashrc
+	export PATH=${NODEPATH}/bin:${PATH}
+	# source ~/.bashrc
 	
 	echo " :: Creating lib folder."; 
 	mkdir -p ${LIBS}
 	
 	echo " :: Downloading and installing libraries..."
-	#make -s update-env
+	make -s update-env
 	echo " :: Done downloading and installing libraries."
 
 	echo " :: Setting up build directories."
@@ -160,7 +177,7 @@ setup-env:
 	echo " ::	${BUILDDIR}"
 	echo " ::"
 	echo " :: To set up version management with git, run this command: "
-	echo " ::	make git-setup"
+	echo " ::	make setup-git"
 	echo " ::"
 	echo " :: For additional usage, see https://github.com/StefanWallin/roolcss/"
 
