@@ -65,6 +65,7 @@ clean:
 	rm -rfv ${BUILDDIR}${RESOURCEDIR_B}{OBJDIR}/*
 	rm -rfv ${BUILDDIR}${RESOURCEDIR_B}{SPRITEDIR}/*
 	echo " :: Cleaning done"
+
 debug:
 	echo "VARS:"
 	echo "====="
@@ -97,7 +98,7 @@ install:
 	echo "Building"
 setup-run:
 	echo " :: Installing libraries..."
-	make -s install-node
+	[[ `which node` ]] && echo " :: node.js already installed" || make -s install-node
 	make -s install-npm
 	make -s install-less
 	make -s install-css-validator
@@ -109,13 +110,14 @@ setup-run:
 setup-prepare:
 	#TODO: Add tests for each download.
 	echo " :: Downloading libraries..."
-	make -s download-node
+	[[ `which node` ]] && echo " :: node.js already installed" || make -s download-node
 	make -s download-less
 	make -s download-css-validator
 	make -s download-html-validator #This installation retrieves it's own dependenices and takes a while doing it(~1 h).
 	echo " :: Done downloading libraries."
 	
 download-node:
+	[[ `which node` ]] && echo " :: node.js already installed"
 	echo " :: Removing old node-server"
 	rm -rf ${NODEPATH}; mkdir -p ${NODEPATH}
 	rm -rf node; mkdir -p node
@@ -123,6 +125,7 @@ download-node:
 	curl -s http://nodejs.org/dist/node-latest.tar.gz > node-latest.tar.gz 
 
 setup-node:	
+	[[ `which node` ]] && echo " :: node.js already installed"
 	echo " :: Unzipping nodejs."
 	
 	tar xzf node-latest.tar.gz --strip-components=1 -C node
