@@ -1,3 +1,12 @@
+# LICENSE
+# RoolCSS Makefile by Stefan Wallin is licensed under a Creative Commons 
+# Attribution-ShareAlike 3.0 Unported License. To view a copy of this license, 
+# visit http://creativecommons.org/licenses/by-sa/3.0/ or send a letter to 
+# Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, 
+# USA. The project can be found at this location:
+# https://github.com/StefanWallin/roolcss/commits/master
+
+
 #root dir
 TOPDIR=$(realpath .)
 
