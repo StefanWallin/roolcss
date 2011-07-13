@@ -66,6 +66,11 @@ clean:
 	rm -rfv ${BUILDDIR}${RESOURCEDIR_B}{SPRITEDIR}/*
 	echo " :: Cleaning done"
 
+clean-lib:
+	echo " :: Removing all libraries"
+	rm -rfv ${LIBS}/*
+	echo " :: Done removing all libraries"
+
 debug:
 	echo "VARS:"
 	echo "====="
