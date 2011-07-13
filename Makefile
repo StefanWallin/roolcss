@@ -39,6 +39,8 @@ SPRITEDIR=sprites
 .SILENT:	help
 .SILENT:	debug
 .SILENT:	setup-git
+.SILENT:	run-setup
+.SILENT:	prepare-setup
 	
 default: help
 
@@ -73,7 +75,7 @@ debug:
 
 install:
 	echo "Building"
-update-env:
+run-setup:
 	echo " :: Updating libraries."
 	make -s install-node
 	make -s install-npm
@@ -83,14 +85,22 @@ update-env:
 	make -s install-js-lint
 	make -s install-css-lint
 	make -s install-compass
+prepare-setup:
+	#TODO: Add tests for each download.
+	echo " :: Downloading all libraries needed."
 	
-install-node:
+	make -s download-node
+	make -s download-less
+	make -s download-css-validator
+	make -s install-html-validator #This installation retrieves it's own dependenices and takes a while doing it.
+download-node:
 	echo " :: Removing old node-server"
 	rm -rf ${NODEPATH}; mkdir -p ${NODEPATH}
 	rm -rf node; mkdir -p node
 	echo " :: Downloading nodejs."
 	curl -s http://nodejs.org/dist/node-latest.tar.gz > node-latest.tar.gz 
-	
+
+setup-node:	
 	echo " :: Unzipping nodejs."
 	
 	tar xzf node-latest.tar.gz --strip-components=1 -C node
@@ -120,7 +130,7 @@ install-npm:
 	rm npm-install.sh
 	echo " :: npm installation done."
 
-install-less:
+download-less:
 	echo " :: Removing old less css compiler"
 	rm -rf ${LESSPATH}; mkdir -p ${LESSPATH}
 	
@@ -128,12 +138,13 @@ install-less:
 	curl -s https://raw.github.com/cloudhead/less.js/master/bin/lessc > ${LESSPATH}/lessc.js
 	
 	echo " :: less compiler installation done."	
-install-css-validator:
+download-css-validator:
 	echo " :: Removing old CSS Validator"
 	rm -rf ${CSSVALIDATORPATH}; mkdir -p ${CSSVALIDATORPATH}
 	
 	echo " :: Setting up the Jigsaw CSS Validator"
 	cd ${CSSVALIDATORPATH}; git clone git://github.com/StefanWallin/jigsaw-runner.git
+setup-css-validator:
 	cd ${CSSVALIDATORPATH}/jigsaw-runner/; sh jigsaw-update.sh
 	echo " :: CSS Validator installation done."
 	
@@ -164,17 +175,24 @@ setup-env:
 	mkdir -p ${NODEPATH}
 	# export PATH=${NODEPATH}/bin:${PATH}
 	# export JAVA_HOME="/Library/Java/Home/"
+	
+	#Test for node in path before applying this.
 	echo "export PATH='${NODEPATH}/bin:${PATH}'" >> ~/.bash_profile
+	
+	#Test for something, probably: ${JAVA_HOME}/bin/java before applying this.
 	echo 'export JAVA_HOME="/Library/Java/Home/"' >> ~/.bash_profile
 	source ~/.bash_profile #Don't seem to work... :(
 	
 	echo " :: Creating lib folder."; 
 	mkdir -p ${LIBS}
 	
-	echo " :: Downloading and installing libraries..."
-	make -s update-env
-	echo " :: Done downloading and installing libraries."
-
+	#TODO: Test for downloaded files
+	echo " :: Downloading libraries..."
+	make -s prepare-setup
+	echo " :: Done downloading libraries."
+	echo " :: Installing libraries..."
+	make -s run-setup
+	echo " :: Done installing libraries."
 	echo " :: Setting up build directories."
 	mkdir -p ${BUILDDIR}
 	mkdir -p ${BUILDDIR}${RESOURCEDIR_B}/${CSSDIR}
