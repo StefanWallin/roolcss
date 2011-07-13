@@ -99,7 +99,7 @@ install:
 setup-run:
 	echo " :: Installing libraries..."
 	[[ `which node` ]] && echo " :: node.js already installed" || make -s install-node
-	make -s install-npm
+	[[ `which npm` ]] && echo " :: npm already installed" || make -s install-npm
 	make -s install-less
 	make -s install-css-validator
 	make -s install-html-validator
@@ -111,6 +111,7 @@ setup-prepare:
 	#TODO: Add tests for each download.
 	echo " :: Downloading libraries..."
 	[[ `which node` ]] && echo " :: node.js already installed" || make -s download-node
+	[[ `which npm` ]] && echo " :: npm already installed" || make -s download-npm
 	make -s download-less
 	make -s download-css-validator
 	make -s download-html-validator #This installation retrieves it's own dependenices and takes a while doing it(~1 h).
@@ -140,14 +141,14 @@ setup-node:
 	rm -rf node-latest.tar.gz node
 
 	echo " :: Node installation done."	
-install-npm:
-
-	echo " :: Removing old npm(node package manager)."
 	
-
+download-npm:
+	[[ `which npm` ]] && echo " :: npm already installed" || 
 	echo " :: Downloading npm."
 	curl http://npmjs.org/install.sh > npm-install.sh	
 
+install-npm:
+	[[ `which npm` ]] && echo " :: npm already installed" || 
 	echo " :: Installning npm."
 	chmod +x npm-install.sh
 	export PATH=${NODEPATH}/bin:${PATH};./npm-install.sh
