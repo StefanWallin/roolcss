@@ -44,10 +44,18 @@ SPRITEDIR=sprites
 .SILENT:	setup-run
 .SILENT:	setup-prepare
 .SILENT:	setup-notice
+.SILENT:	clean
 	
 default: help
 
-
+clean:
+	echo " :: Cleaning out the build-directory"
+	rm -rfv ${BUILDDIR}${RESOURCEDIR_B}{CSSDIR}/*
+	rm -rfv ${BUILDDIR}${RESOURCEDIR_B}{JSDIR}/*
+	rm -rfv ${BUILDDIR}${RESOURCEDIR_B}{IMGDIR}/*
+	rm -rfv ${BUILDDIR}${RESOURCEDIR_B}{OBJDIR}/*
+	rm -rfv ${BUILDDIR}${RESOURCEDIR_B}{SPRITEDIR}/*
+	echo " :: Cleaning done"
 debug:
 	echo "VARS:"
 	echo "====="
@@ -228,7 +236,7 @@ setup-notice:
 	echo " ::	${BUILDDIR}"
 	echo " ::"
 	echo " :: To set up version management with git, run this command: "
-	echo " ::	make git-setup"
+	echo " ::	make setup-git"
 	echo " ::"
 	echo " :: For additional usage, see https://github.com/StefanWallin/roolcss/"
 
@@ -257,7 +265,7 @@ help:
 	echo "help			Displays this information"
 	echo "setup			Set up the staging environment."
 	echo "setup-prepare		Download dependencies"
-	echo "setup-run		Run setup (ONLY AFTER 'make setup-prepare'!!"
+	echo "setup-run		Run setup (ONLY AFTER 'make setup-prepare'!!)"
 	echo "setup-git		Set up the git ignore rules."
 
 	echo " "
