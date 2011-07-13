@@ -32,15 +32,18 @@ SPRITEDIR=sprites
 # * Test for installed python
 # * Test for installed git
 # * Test for installed hg (mercurial)
+# * Test for installed svn
 # * Test for JAVA_HOME
+# * Test for JDK version 5 or later.
 
 
 #Special targets:
 .SILENT:	help
 .SILENT:	debug
 .SILENT:	setup-git
-.SILENT:	run-setup
-.SILENT:	prepare-setup
+.SILENT:	setup-run
+.SILENT:	setup-prepare
+.SILENT:	setup-notice
 	
 default: help
 
@@ -75,8 +78,8 @@ debug:
 
 install:
 	echo "Building"
-run-setup:
-	echo " :: Updating libraries."
+setup-run:
+	echo " :: Installing libraries..."
 	make -s install-node
 	make -s install-npm
 	make -s install-less
@@ -85,14 +88,16 @@ run-setup:
 	make -s install-js-lint
 	make -s install-css-lint
 	make -s install-compass
-prepare-setup:
+	echo " :: Done installing libraries."
+setup-prepare:
 	#TODO: Add tests for each download.
-	echo " :: Downloading all libraries needed."
-	
+	echo " :: Downloading libraries..."
 	make -s download-node
 	make -s download-less
 	make -s download-css-validator
-	make -s install-html-validator #This installation retrieves it's own dependenices and takes a while doing it.
+	make -s download-html-validator #This installation retrieves it's own dependenices and takes a while doing it(~1 h).
+	echo " :: Done downloading libraries."
+	
 download-node:
 	echo " :: Removing old node-server"
 	rm -rf ${NODEPATH}; mkdir -p ${NODEPATH}
@@ -148,15 +153,31 @@ setup-css-validator:
 	cd ${CSSVALIDATORPATH}/jigsaw-runner/; sh jigsaw-update.sh
 	echo " :: CSS Validator installation done."
 	
-install-html-validator:
+download-html-validator:
 	#info:	http://about.validator.nu/#src
 	echo " :: Removing old HTML Validator"
 	rm -rf ${HTMLVALIDATORPATH}; mkdir -p ${HTMLVALIDATORPATH}
-	cd ${HTMLVALIDATORPATH};	hg clone https://bitbucket.org/validator/build build
-	export JAVA_HOME="/Library/Java/Home/"; cd ${HTMLVALIDATORPATH}; python build/build.py all
-	export JAVA_HOME="/Library/Java/Home/"; cd ${HTMLVALIDATORPATH}; python build/build.py all
-	#Duplicate line is not a typo, it resolves a  ClassCastException-bug.
-	
+	echo " :: Downloading HTML Validator"
+	echo "This will take quite some time, times below are measured on a 100mbit connection."
+	echo "If you think the script has stuck, you can open a new terminal and issue this command:"
+	echo "	tail -f ${HTMLVALIDATORPATH}/log.log"
+	echo " "
+	echo "The stuff at http://www.w3.org/TR/* is usually most troublesome, but it has never failed for me." 
+	echo " :: Checking out HTML Validator source tree (~30 sec)"
+	cd ${HTMLVALIDATORPATH};	hg clone https://bitbucket.org/validator/build build 1> log.log 2> log.log
+	echo " :: Checking out HTML Validator dependencies source tree (~5 min)"
+	export JAVA_HOME="/Library/Java/Home/"; cd ${HTMLVALIDATORPATH}; python build/build.py checkout 1> log.log 2> log.log ; 
+	echo " :: Downloading HTML Validator binary dependencies (~45 min)"
+	export JAVA_HOME="/Library/Java/Home/"; cd ${HTMLVALIDATORPATH}; python build/build.py dldeps 1> log.log 2> log.log; 
+	echo " :: Done downloading HTML Validator binary dependencies"
+
+install-html-validator:
+	echo " :: Installing HTML Validator"
+	export JAVA_HOME="/Library/Java/Home/"; cd ${HTMLVALIDATORPATH}; python build/build.py build &> /dev/null; 
+	export JAVA_HOME="/Library/Java/Home/"; cd ${HTMLVALIDATORPATH}; python build/build.py build &> /dev/null;
+	#Duplicate execution is not a typo, it resolves a ClassCastException-bug.
+	rm ${HTMLVALIDATORPATH}/log.log
+	echo " :: Done installation HTML Validator"
 install-js-lint:
 	echo " :: Removing old JSLinter"
 	rm -rf ${JSLINTPATH}; mkdir -p ${JSLINTPATH}
@@ -186,13 +207,6 @@ setup-env:
 	echo " :: Creating lib folder."; 
 	mkdir -p ${LIBS}
 	
-	#TODO: Test for downloaded files
-	echo " :: Downloading libraries..."
-	make -s prepare-setup
-	echo " :: Done downloading libraries."
-	echo " :: Installing libraries..."
-	make -s run-setup
-	echo " :: Done installing libraries."
 	echo " :: Setting up build directories."
 	mkdir -p ${BUILDDIR}
 	mkdir -p ${BUILDDIR}${RESOURCEDIR_B}/${CSSDIR}
@@ -207,13 +221,14 @@ setup-env:
 	mkdir -p ${SOURCEDIR}${RESOURCEDIR_S}/${IMGDIR}
 	mkdir -p ${SOURCEDIR}${RESOURCEDIR_S}/${OBJDIR}
 	mkdir -p ${SOURCEDIR}${RESOURCEDIR_S}/${SPRITEDIR}
-	
+
+setup-notice:
 	echo " ::"	
 	echo " :: The environment is set up. Now point your webserver towards:"
 	echo " ::	${BUILDDIR}"
 	echo " ::"
 	echo " :: To set up version management with git, run this command: "
-	echo " ::	make setup-git"
+	echo " ::	make git-setup"
 	echo " ::"
 	echo " :: For additional usage, see https://github.com/StefanWallin/roolcss/"
 
@@ -226,6 +241,9 @@ setup-git:
 
 setup:
 	make -s setup-env
+	make -s setup-prepare
+	make -s setup-run
+	make -s setup-notice
 
 ##########################
 # Usage part of makefile #
@@ -237,9 +255,11 @@ help:
 	echo "=================="
 	echo " "
 	echo "help			Displays this information"
-	echo "setup-env		Set up the staging environment."
+	echo "setup			Set up the staging environment."
+	echo "setup-prepare		Download dependencies"
+	echo "setup-run		Run setup (ONLY AFTER 'make setup-prepare'!!"
 	echo "setup-git		Set up the git ignore rules."
-	echo "update-env		Updates the third party libraries to build this project."
+
 	echo " "
 	echo "ir			Builds and installs all resources."
 	echo "ic			Builds and installs the css & less resources."
