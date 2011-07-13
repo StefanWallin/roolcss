@@ -26,6 +26,15 @@ IMGDIR=img
 OBJDIR=obj
 SPRITEDIR=sprites
 
+
+#TODO:
+# * Test for installed node
+# * Test for installed python
+# * Test for installed git
+# * Test for installed hg (mercurial)
+# * Test for JAVA_HOME
+
+
 #Special targets:
 .SILENT:	help
 .SILENT:	debug
@@ -106,8 +115,9 @@ install-npm:
 
 	echo " :: Installning npm."
 	chmod +x npm-install.sh
-	./npm-install.sh
+	export PATH=${NODEPATH}/bin:${PATH};./npm-install.sh
 
+	rm npm-install.sh
 	echo " :: npm installation done."
 
 install-less:
@@ -128,8 +138,13 @@ install-css-validator:
 	echo " :: CSS Validator installation done."
 	
 install-html-validator:
+	#info:	http://about.validator.nu/#src
 	echo " :: Removing old HTML Validator"
 	rm -rf ${HTMLVALIDATORPATH}; mkdir -p ${HTMLVALIDATORPATH}
+	cd ${HTMLVALIDATORPATH};	hg clone https://bitbucket.org/validator/build build
+	export JAVA_HOME="/Library/Java/Home/"; cd ${HTMLVALIDATORPATH}; python build/build.py all
+	export JAVA_HOME="/Library/Java/Home/"; cd ${HTMLVALIDATORPATH}; python build/build.py all
+	#Duplicate line is not a typo, it resolves a  ClassCastException-bug.
 	
 install-js-lint:
 	echo " :: Removing old JSLinter"
@@ -144,11 +159,14 @@ install-compass:
 	rm -rf ${COMPASSPATH}; mkdir -p ${COMPASSPATH}
 
 setup-env:
+	
 	echo " :: Setting up environment variables"
 	mkdir -p ${NODEPATH}
-	echo "export PATH=${NODEPATH}/bin:${PATH}" >> ~/.bashrc
-	export PATH=${NODEPATH}/bin:${PATH}
-	# source ~/.bashrc
+	# export PATH=${NODEPATH}/bin:${PATH}
+	# export JAVA_HOME="/Library/Java/Home/"
+	echo "export PATH='${NODEPATH}/bin:${PATH}'" >> ~/.bash_profile
+	echo 'export JAVA_HOME="/Library/Java/Home/"' >> ~/.bash_profile
+	source ~/.bash_profile #Don't seem to work... :(
 	
 	echo " :: Creating lib folder."; 
 	mkdir -p ${LIBS}
