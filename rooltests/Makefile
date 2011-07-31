@@ -1,7 +1,8 @@
+TESTS=$(subst .php,.out,$(wildcard Test*.php))
 
+tests: ${TESTS}
 
-tests:
-
-	echo "Running all tests."
-
+Test%.out:
+	echo "Running Test for $*"
+	php Test$*.php
 

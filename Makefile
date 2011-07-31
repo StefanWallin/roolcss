@@ -21,7 +21,8 @@ CSSVALIDATORPATH=${LIBS}/css-validator
 HTMLVALIDATORPATH=${LIBS}/html-validator
 COMPASSPATH=${LIBS}/compass
 
-BUILDDIR=${TOPDIR}/build
+# BUILDDIR=${TOPDIR}/build
+BUILDDIR=/users/stefan/Sites/library
 RESOURCEDIR_B=
 		#If non-empty, remember intial slash!
 
@@ -29,12 +30,16 @@ SOURCEDIR=${TOPDIR}/src
 RESOURCEDIR_S=/r
 		#If non-empty, remember intial slash!
 
+HTMLDIR=html
+PHPDIR=html
 CSSDIR=css
 JSDIR=js
 IMGDIR=img
 OBJDIR=obj
 SPRITEDIR=sprites
 
+#TESTS:
+export NODE_INSTALLED=`which node| wc -l`
 
 #TODO:
 # * Test for installed node
@@ -65,6 +70,9 @@ clean:
 	rm -rfv ${BUILDDIR}${RESOURCEDIR_B}{OBJDIR}/*
 	rm -rfv ${BUILDDIR}${RESOURCEDIR_B}{SPRITEDIR}/*
 	echo " :: Cleaning done"
+
+tests:
+	make -C rooltests tests
 
 clean-lib:
 	echo " :: Removing all libraries"
@@ -122,31 +130,27 @@ setup-prepare:
 	make -s download-html-validator #This installation retrieves it's own dependenices and takes a while doing it(~1 h).
 	echo " :: Done downloading libraries."
 	
-download-node:
-	[[ `which node` ]] && echo " :: node.js already installed"
+node-latest.tar.gz:
 	echo " :: Removing old node-server"
 	rm -rf ${NODEPATH}; mkdir -p ${NODEPATH}
 	rm -rf node; mkdir -p node
 	echo " :: Downloading nodejs."
 	curl -s http://nodejs.org/dist/node-latest.tar.gz > node-latest.tar.gz 
-
-setup-node:	
-	[[ `which node` ]] && echo " :: node.js already installed"
+setup-node: node-latest.tar.gz
 	echo " :: Unzipping nodejs."
 	
-	tar xzf node-latest.tar.gz --strip-components=1 -C node
+	tar xzf node-latest.tar.gz --strip-components=1 -C ${NODEPATH}
 	
 	echo " :: Configuring nodejs."
-	cd node; ./configure --prefix=${NODEPATH}
+	cd ${NODEPATH}; ./configure --prefix=${NODEPATH}
 	
 	echo " :: Installing nodejs."
-	cd node; make -s install
+	cd ${NODEPATH}; make -s install
 	
 	echo " :: Removing tarball and source dir."
-	rm -rf node-latest.tar.gz node
+	#rm -rf node-latest.tar.gz node
 
 	echo " :: Node installation done."	
-	
 download-npm:
 	[[ `which npm` ]] && echo " :: npm already installed" || 
 	echo " :: Downloading npm."
@@ -235,6 +239,8 @@ setup-env:
 	
 	echo " :: Setting up build directories."
 	mkdir -p ${BUILDDIR}
+	mkdir -p ${BUILDDIR}${RESOURCEDIR_B}/${HTMLDIR}
+	mkdir -p ${BUILDDIR}${RESOURCEDIR_B}/${PHPDIR}
 	mkdir -p ${BUILDDIR}${RESOURCEDIR_B}/${CSSDIR}
 	mkdir -p ${BUILDDIR}${RESOURCEDIR_B}/${JSDIR}
 	mkdir -p ${BUILDDIR}${RESOURCEDIR_B}/${IMGDIR}
@@ -242,6 +248,8 @@ setup-env:
 
 	echo " :: Setting up source directories."
 	mkdir -p ${SOURCEDIR}
+	mkdir -p ${SOURCEDIR}${RESOURCEDIR_S}/${HTMLDIR}
+	mkdir -p ${SOURCEDIR}${RESOURCEDIR_S}/${PHPDIR}
 	mkdir -p ${SOURCEDIR}${RESOURCEDIR_S}/${CSSDIR}
 	mkdir -p ${SOURCEDIR}${RESOURCEDIR_S}/${JSDIR}
 	mkdir -p ${SOURCEDIR}${RESOURCEDIR_S}/${IMGDIR}
